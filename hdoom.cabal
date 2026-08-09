@@ -1,0 +1,44 @@
+cabal-version:      3.16
+name:               hdoom
+version:            0.1.0.0
+license:            NONE
+author:             evanrinehart@gmail.com
+maintainer:         Evan Rinehart
+build-type:         Simple
+extra-doc-files:    CHANGELOG.md
+
+common warnings
+    ghc-options: -Wall
+
+library
+    hs-source-dirs: lib
+    exposed-modules:
+        RGBA, Name8, Offset, Input, Buffer8, Wave, Palette, Patch, Level, 
+        DoomKeys, RNG, KnownIWADs, LumpDirectory, 
+        Clock, AbstractFilePath, FileSystem, FPS, 
+        Loader, ByteParsing, 
+        Video, Audio, Raylib, Draw, FrameBuffer, Gamepad,
+        Mobj, WadFile
+    build-depends:  base ^>=4.20.0.0, vector, mtl, primitive, bytestring,
+                    unordered-containers, hashable, clock, directory, filepath, file-io, stm
+    -- default-language: Haskell2010
+    ghc-options: -g -O2
+
+executable hdoom
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:    base ^>=4.20.0.0, hdoom
+    hs-source-dirs:   app
+    -- default-language: Haskell2010
+    ghc-options: -threaded
+
+    include-dirs:
+        cbits/
+
+    c-sources:
+        cbits/raylib_glue.c
+
+    extra-lib-dirs:   cbits
+    extra-libraries:
+        raylib
+        X11
