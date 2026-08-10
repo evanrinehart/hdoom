@@ -13,6 +13,7 @@ import System.IO.Unsafe (unsafePerformIO)
 import Foreign.Storable
 import Foreign.ForeignPtr
 
+import Name8
 import RGBA
 
 word16 :: Word8 -> Word8 -> Word16
@@ -149,6 +150,9 @@ loadInt32LE off bs = fromIntegral (loadWord32LE off bs)
 
 loadInt64LE :: Int -> ByteString -> Int64
 loadInt64LE off bs = fromIntegral (loadWord64LE off bs)
+
+loadName8 :: Int -> ByteString -> Name8
+loadName8 off bs = Name8 $ loadWord64BE off bs
 
 chunkByteString :: Int -> BS.ByteString -> [BS.ByteString]
 chunkByteString n bs =

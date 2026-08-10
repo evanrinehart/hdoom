@@ -129,7 +129,7 @@ loadLevel name = do
     blob4 <- loadMapLump name "SECTORS"
     blob5 <- loadMapLump name "THINGS"
     let result = Level <$> parseVertexes blob1 <*> parseLinedefs blob2 <*> parseSidedefs blob3 <*> parseSectors blob4 <*> parseThings blob5
-    maybe (fail ":(") pure result
+    maybe (fail ("loadLevel " ++ toString name)) pure result
 
 divisibleBy :: Int -> ByteString -> Maybe ByteString
 divisibleBy n bs
@@ -137,23 +137,51 @@ divisibleBy n bs
     | otherwise = Nothing
 
 parseVertexes :: ByteString -> Maybe [Vertex]
-parseVertexes = mapByteStringChunks 4 f where
-    f bs =
-        let x = fromIntegral (loadInt16LE 0 bs) in
-        let y = fromIntegral (loadInt16LE 2 bs) in
-        Vertex x y
+parseVertexes = mapByteStringChunks 4 $ \bs ->
+    let x = fromIntegral (loadInt16LE 0 bs) in
+    let y = fromIntegral (loadInt16LE 2 bs) in
+    Vertex x y
 
 parseLinedefs :: ByteString -> Maybe [LineDef]
-parseLinedefs _ = Just []
+parseLinedefs = mapByteStringChunks 14 $ \bs ->
+    LineDef
+        (fromIntegral (loadInt16LE 0 bs))
+        (fromIntegral (loadInt16LE 2 bs))
+        (fromIntegral (loadInt16LE 4 bs))
+        (fromIntegral (loadInt16LE 6 bs))
+        (fromIntegral (loadInt16LE 8 bs))
+        (fromIntegral (loadInt16LE 10 bs))
+        (fromIntegral (loadInt16LE 12 bs))
 
 parseSidedefs :: ByteString -> Maybe [SideDef]
-parseSidedefs _ = Just []
+parseSidedefs = mapByteStringChunks 30 $ \bs ->
+    SideDef
+        (fromIntegral (loadInt16LE 0 bs))
+        (fromIntegral (loadInt16LE 2 bs))
+        (loadName8 4 bs)
+        (loadName8 12 bs)
+        (loadName8 20 bs)
+        (fromIntegral (loadInt16LE 28 bs))
 
 parseSectors :: ByteString -> Maybe [Sector]
-parseSectors _ = Just []
+parseSectors = mapByteStringChunks 26 $ \bs ->
+    Sector
+        (fromIntegral (loadInt16LE 0 bs))
+        (fromIntegral (loadInt16LE 2 bs))
+        (loadName8 4 bs)
+        (loadName8 12 bs)
+        (fromIntegral (loadInt16LE 20 bs))
+        (fromIntegral (loadInt16LE 22 bs))
+        (fromIntegral (loadInt16LE 24 bs))
 
 parseThings :: ByteString -> Maybe [Thing]
-parseThings _ = Just []
+parseThings  = mapByteStringChunks 10 $ \bs ->
+    Thing
+        (fromIntegral (loadInt16LE 0 bs))
+        (fromIntegral (loadInt16LE 2 bs))
+        (fromIntegral (loadInt16LE 4 bs))
+        (fromIntegral (loadInt16LE 6 bs))
+        (fromIntegral (loadInt16LE 8 bs))
 
 loadMapLump :: Name8 -> Name8 -> Loader ByteString
 loadMapLump mapname name = do
