@@ -32,7 +32,7 @@ newTimebase = Timebase <$> getTime Monotonic
 data Ticker = Ticker
     { enable :: IO ()
     , disable :: IO ()
-    , check :: IO Int }
+    , get_ticks :: IO Int }
 
 type TickerGuts = (Timebase, IORef Bool, IORef Int)
 
@@ -40,7 +40,7 @@ wrapTicker :: TickerGuts -> Ticker
 wrapTicker guts@(base,enref,timeref) = Ticker
     { enable = enableTicker guts
     , disable = writeIORef enref False
-    , check = checkTicker guts }
+    , get_ticks = checkTicker guts }
 
 -- device to generate "ticks", can be disabled
 newTicker :: Timebase -> IO Ticker

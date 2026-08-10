@@ -197,7 +197,7 @@ iVideoFinishUpdate VideoMisc{video_screen0=fb,video_tex=tex,video_img=img,video_
 
     -- color expand and upload framebuffer
     pal <- readIORef palref
-    --fillRandom buf img
+    --fillRandom (fb_pixels fb) img
     copyTrueColor img (fb_pixels fb) pal
     updateTexture tex img
     beginDrawing

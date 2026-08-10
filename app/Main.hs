@@ -5,7 +5,7 @@ module Main where
 import Control.Monad (replicateM_, when)
 import System.IO (hClose, IOMode(..), Handle)
 import Control.Concurrent
-import Control.Exception (throwIO, finally, bracket)
+import Control.Exception (throwIO, finally)
 
 import FileSystem (identifyIWAD, openFile, OsPath)
 import Clock
@@ -19,8 +19,10 @@ import WadFile
 import Loader
 import LumpDirectory
 
+import Input
+import Draw
 
-data AppKit = AppKit
+data App = App
   { app_video :: VideoCtrl
   , app_audio :: AudioCtrl
   , app_timebase :: Timebase
@@ -49,19 +51,18 @@ main = do
     h <- openFile wadpath ReadMode
 
     -- set up video and audio system
-    palettes@(pal:_) <- runLoader loadPalettes ld h `orThrowWith` id
+    pal:_ <- runLoader loadPalettes ld h `orThrowWith` id
     timebase <- newTimebase
     video <- setupVideo 320 200 2 (iwad_title iwad) pal timebase
     audio <- initAudio ld h
 
-    --patch1 <- runLoader (loadPatch "TITLEPIC") ld h `orThrowWith` id
+    patch1 <- runLoader (loadPatch "TITLEPIC") ld h `orThrowWith` id
     --patch2 <- runLoader (loadPatch "HEADA1") ld h `orThrowWith` id
-    --fb <- video.get_buffer
-    --drawPatch fb 0 0 patch1
+    fb <- video.get_buffer
+    drawPatch fb 0 0 patch1
     --drawPatch fb 160 100 patch2
 
-    level <- runLoader (loadLevel "E1M1") ld h `orThrowWith` id
-    print level
+    -- level <- runLoader (loadLevel "E1M1") ld h `orThrowWith` id
 
     -- M initialize menu system
     -- R *load graphics*, initialize rendering lookup tables
@@ -75,26 +76,26 @@ main = do
     rng1 <- newRNG
     rng2 <- newRNG
 
-    let app = AppKit video audio timebase ticker rng1 rng2 () iwad wadpath ld h
+    let app = App video audio timebase ticker rng1 rng2 () iwad wadpath ld h
 
     netgameCore app
         `finally`
             cleanup app
 
-cleanup :: AppKit -> IO ()
+cleanup :: App -> IO ()
 cleanup app = do
     hClose app.app_iwad_handle
     app.app_audio.shutdown
     app.app_video.shutdown
 
-netgameCore :: AppKit -> IO ()
+netgameCore :: App -> IO ()
 netgameCore app = loop where
     loop = do
         -- see if enough time passed, is often zero
-        ticks <- app.app_ticker.check
+        ticks <- app.app_ticker.get_ticks
         -- generate user input command to try to advance time
         replicateM_ ticks $ do
-            nc_MakeTic app localcmds -- poll and cache user input, assemble cmd, maketic++
+            nc_MakeTic app       -- poll and cache user input, assemble cmd, maketic++
             nc_NVomit            -- broadcast cmd to all nodes
             nc_NSolidify         -- handle your own packet
         whileM nc_NSolidify      -- handle any incoming packets and retransmit requests
@@ -105,6 +106,8 @@ netgameCore app = loop where
         gametic <- getGametic -- current gametic
         replicateM_ (lowtic - gametic) nc_GameTic -- gametic ++
         when (ticks > 0) $ do
+            --fps <- app.app_video.get_fps
+            --print fps
             nc_DDisplay app
         iSleep 0.001
         done <- windowShouldClose
@@ -112,9 +115,15 @@ netgameCore app = loop where
             then pure ()
             else loop
 
-processEvents :: AppKit -> IO ()
+processEvents :: App -> IO ()
 processEvents app = do
     events <- app.app_video.get_events
+
+    case events of
+        EvKeyDown _ : _ -> do
+            print events
+            app.app_audio.play_sound "DSITEMUP"
+        _ -> pure ()
 
     -- m_responder (menu interaction)
     -- g_responder (subresponders, cache control state)
@@ -123,28 +132,39 @@ processEvents app = do
     -- to update internal states
     -- and trigger side effects (sounds, quit)
 
-    --when (not (null events)) (print events >> app.app_audio.play_sound "DSITEMUP")
     pure ()
 
-buildTiccmd :: AppKit -> IO ()
-buildTiccmd app = do
+buildTiccmd :: App -> IO ()
+buildTiccmd _ = do
     -- sample control state to form 1 cmd for player
     pure ()
 
-localcmds = []
+-- receive and sort netcmds, including from self
+nc_NSolidify :: IO Bool
 nc_NSolidify = pure False
+
+-- transmit localcmds and honor retransmit requests
+nc_NVomit :: IO ()
 nc_NVomit = pure ()
+
+-- assuming we have enough cmds, advance the game and increment gametic
+nc_GameTic :: IO ()
 nc_GameTic = pure () -- consumes ticmds
-nc_MakeTic app _ = do -- should produce ticcmds
+
+nc_MakeTic :: App -> IO ()
+nc_MakeTic app = do -- should produce ticcmds
     processEvents app -- update internal state and execute side effects (sound)
     buildTiccmd app   -- sample control cache to generate 1 cmd for player
     -- app.engine.maketic += 1
     pure ()
 
-nc_DDisplay :: AppKit -> IO ()
+nc_DDisplay :: App -> IO ()
 nc_DDisplay app = app.app_video.finish_update
 
+
+getLowtic :: IO Int
 getLowtic = pure 0
+getGametic :: IO Int
 getGametic = pure 0
 
 
@@ -239,4 +259,3 @@ stResponder = do
     -- always returns false, never eats event
     -- the only purpose is to activate cheats
     pure ()
-
