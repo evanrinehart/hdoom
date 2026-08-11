@@ -13,8 +13,8 @@ common warnings
 library
     hs-source-dirs: lib
     exposed-modules:
-        RGBA, Name8, Offset, Input, Buffer8, Wave, Palette, Patch, Level, 
-        DoomKeys, RNG, KnownIWADs, LumpDirectory, 
+        RGBA, Name8, Offset, Input, Buffer8, Wave, Palette, Patch, Level, Fix16,
+        DoomKeys, RNG, KnownIWADs, LumpDirectory,
         Clock, AbstractFilePath, FileSystem, FPS, 
         Loader, ByteParsing, 
         Video, Audio, Raylib, Draw, FrameBuffer, Gamepad,
