@@ -1,5 +1,5 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-module Fix16 (Fix16(..), fromInt32, toDouble, (//)) where
+module Fix16 (Fix16(..), fromInt32, toDouble, integerPart, integerPart32, (//)) where
 
 import Data.Int
 import Data.Bits
@@ -59,6 +59,12 @@ Fix16 a // Fix16 b = Fix16 (fixedDiv a b)
 -- becomes the same integer value, if it is representable
 fromInt32 :: Int32 -> Fix16
 fromInt32 a = Fix16 (a * scale)
+
+integerPart32 :: Fix16 -> Int32
+integerPart32 (Fix16 a) = a `div` scale
+
+integerPart :: Fix16 -> Int
+integerPart (Fix16 a) = fromIntegral (a `div` scale)
 
 -- could be more efficient
 toDouble :: Fix16 -> Double
