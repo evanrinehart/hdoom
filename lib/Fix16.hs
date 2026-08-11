@@ -61,10 +61,10 @@ fromInt32 :: Int32 -> Fix16
 fromInt32 a = Fix16 (a * scale)
 
 integerPart32 :: Fix16 -> Int32
-integerPart32 (Fix16 a) = a `div` scale
+integerPart32 (Fix16 a) = a `quot` scale
 
 integerPart :: Fix16 -> Int
-integerPart (Fix16 a) = fromIntegral (a `div` scale)
+integerPart (Fix16 a) = fromIntegral (a `quot` scale)
 
 -- could be more efficient
 toDouble :: Fix16 -> Double
