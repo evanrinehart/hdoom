@@ -6,6 +6,7 @@ import Data.Word
 import Data.Bits
 import Data.Primitive.ByteArray
 import Control.Monad.ST
+import Control.Monad (zipWithM_)
 
 import Four
 import Nodes
@@ -15,15 +16,11 @@ import Geometry
 data PackedNodes = PackedNodes !Int !ByteArray
 
 packNodes :: Int -> [Node] -> PackedNodes
-packNodes n nodes = PackedNodes n $ createByteArray (56 * n) $ \arr -> go 0 (take n nodes) arr where
-    go :: forall s . Int -> [Node] -> MutableByteArray s -> ST s ()
-    go i [] arr = pure ()
-    go i (node:more) arr = do
-        unsafeWriteNode arr i node
-        go (i + 1) more arr
+packNodes n nodes = PackedNodes n (createByteArray (56 * n) fill) where
+    fill arr = zipWithM_ (unsafeWriteNode arr) [0 .. n-1] nodes
 
 unpackNodes :: PackedNodes -> [Node]
-unpackNodes (PackedNodes n arr) = map (unsafeGetNode arr) [0 .. n - 1]
+unpackNodes (PackedNodes n arr) = map (unsafeGetNode arr) [0 .. n-1]
 
 -- accessing the packed nodes directly
 unsafeGetChild0 :: ByteArray -> Int -> Word32

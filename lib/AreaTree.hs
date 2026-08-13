@@ -36,7 +36,7 @@ areaTree arr num bbox = case analyzeNodeNumber num of
         let c0 = fromIntegral $ unsafeGetChild0 arr here
             c1 = fromIntegral $ unsafeGetChild1 arr here
             a0 = unsafeGetBox0 arr here
-            a1 = unsafeGetBox0 arr here
+            a1 = unsafeGetBox1 arr here
             line = unsafeGetDivline arr here
         in SplitArea here bbox line (areaTree arr c0 a0) (areaTree arr c1 a1)
 
