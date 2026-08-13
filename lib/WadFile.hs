@@ -25,6 +25,7 @@ import Palette
 import Patch
 import Nodes
 import Level
+--import BlockMap (BlockMapData, parseBlockMap)
 
 import qualified Debug.Trace
 
@@ -225,6 +226,12 @@ parseNodes = mapByteStringChunks 28 $ \bs ->
         (fromIntegral (loadWord16LE 24 bs))
         (fromIntegral (loadWord16LE 26 bs))
 
+{-
+loadBlockMap :: String -> Loader BlockMapData
+loadBlockMap mapname = do
+    blob <- loadMapLump mapname "BLOCKMAP"
+    parseBlockMap blob `orFailWith` (mapname ++ "blockmap lump")
+-}
 
 
 orFail (Just x) _  = Right x
