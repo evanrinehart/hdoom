@@ -10,6 +10,7 @@ import qualified Data.Vector as V
 import Data.Vector.Primitive (Vector)
 import qualified Data.Vector.Primitive as VP
 import Data.List
+import Data.String
 import Name8
 import Fix16
 import Four
@@ -79,9 +80,9 @@ parseSoundHeader blob = do
 
 
 -- patches (single images)
-loadPatch :: Name8 -> Loader Patch
+loadPatch :: String -> Loader Patch
 loadPatch name = do
-    blob <- loadLumpByName name
+    blob <- loadLumpByName (fromString name)
     case parsePatch blob of
         Nothing -> fail "bad patch"
         Just x -> pure x
@@ -125,7 +126,7 @@ tryTakePost bs = do
 
 
 -- load a map
-loadLevel :: Name8 -> Loader Level
+loadLevel :: String -> Loader Level
 loadLevel name = do
     blob1 <- loadMapLump name "VERTEXES"
     blob2 <- loadMapLump name "LINEDEFS"
@@ -133,7 +134,7 @@ loadLevel name = do
     blob4 <- loadMapLump name "SECTORS"
     blob5 <- loadMapLump name "THINGS"
     let result = Level <$> parseVertexes blob1 <*> parseLinedefs blob2 <*> parseSidedefs blob3 <*> parseSectors blob4 <*> parseThings blob5
-    maybe (fail ("loadLevel " ++ toString name)) pure result
+    result `orFailWith` ("loadLevel " ++ name)
 
 divisibleBy :: Int -> ByteString -> Maybe ByteString
 divisibleBy n bs
@@ -187,18 +188,18 @@ parseThings  = mapByteStringChunks 10 $ \bs ->
         (fromIntegral (loadInt16LE 6 bs))
         (fromIntegral (loadInt16LE 8 bs))
 
-loadMapLump :: Name8 -> Name8 -> Loader ByteString
+loadMapLump :: String -> String -> Loader ByteString
 loadMapLump mapname name = do
-    Just map_i <- lookupLumpNumber mapname
-    Just lump_i <- findFirstLumpFrom map_i name
+    Just map_i <- lookupLumpNumber (fromString mapname)
+    Just lump_i <- findFirstLumpFrom map_i (fromString name)
     loadLump lump_i
 
 
 -- load the NODES lump for level
-loadNodes :: Name8 -> Loader [Node]
+loadNodes :: String -> Loader [Node]
 loadNodes mapname = do
     blob <- loadMapLump mapname "NODES"
-    nodes <- parseNodes blob `orFailWith` (toString mapname ++ "nodes lump")
+    nodes <- parseNodes blob `orFailWith` (mapname ++ "nodes lump")
     pure nodes
     --let n = BS.length blob `div` 28
     -- !bsp <- packBSP n nodes `orFailWith` (toString mapname ++ " cycle in nodes detected")
