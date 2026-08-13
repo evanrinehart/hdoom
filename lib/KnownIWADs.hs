@@ -22,5 +22,7 @@ known_iwads =
     , KnownIWAD "doomu.wad" English GMRetail MissionDoom1 "Ultimate DOOM"
     , KnownIWAD "doom.wad" English GMRegistered MissionDoom1 "DOOM"
     , KnownIWAD "doom1.wad" English GMShareware MissionDoom1 "DOOM (Shareware)"
+    , KnownIWAD "freedoom1.wad" English GMCommercial MissionDoom1 "FreeDOOM"
+    , KnownIWAD "freedoom2.wad" English GMCommercial MissionDoom2 "FreeDOOM phase 2"
     ]
 

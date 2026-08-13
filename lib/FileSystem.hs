@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE OverloadedRecordDot #-}
-module FileSystem (identifyIWAD, openFile, OsPath) where
+module FileSystem (identifyIWAD, identifySpecificIWAD, openFile, OsPath) where
 
 import AbstractFilePath
 import KnownIWADs
