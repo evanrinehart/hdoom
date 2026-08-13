@@ -5,7 +5,6 @@ import Data.Int
 import Data.Word
 import Data.Bits
 import Data.Primitive.ByteArray
-import Control.Monad.Primitive
 import Control.Monad.ST
 
 import Four
@@ -69,7 +68,7 @@ unsafeGetNode arr i =
         child1 = unsafeGetChild1 arr i
     in Node x y dx dy box0 box1 child0 child1
 
-unsafeWriteNode :: PrimMonad m => MutableByteArray (PrimState m) -> Int -> Node -> m ()
+unsafeWriteNode :: MutableByteArray s -> Int -> Node -> ST s ()
 unsafeWriteNode arr i node = do
     let base = 14 * i
     writeByteArray arr (base + 0) (node_x node)
