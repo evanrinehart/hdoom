@@ -1,23 +1,28 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-module Fix16 (Fix16(..), fromInt32, toDouble, integerPart, integerPart32, (//)) where
+module Fix16 (Fix16(..), fromInt32, fromInt16, toDouble, integerPart, integerPart32, (//)) where
 
 import Data.Int
 import Data.Bits
 import Data.Ratio
 import Data.Char (intToDigit)
+import Data.Vector.Primitive (Prim)
 
 import GHC.Stack
 
-newtype Fix16 = Fix16 Int32 deriving (Eq, Ord, Bits)
+newtype Fix16 = Fix16 Int32 deriving (Eq, Ord, Bits, Prim, Bounded)
 
-scale_bits :: Num a => a
+scale_bits :: Int
 scale_bits = 16
 
-scale :: Num a => a
-scale = 2 ^ scale_bits
+scale_i = 2 ^ scale_bits
+scale_d = 2 ^ scale_bits
+scale_i32 = 2 ^ scale_bits
 
-unit :: Num a => a
-unit = 1 * scale
+fracmask :: Int32
+fracmask = scale_i32 - 1
+
+unit :: Int32
+unit = 1 * scale_i32
 
 instance Num Fix16 where
     Fix16 a + Fix16 b = Fix16 (a + b)
@@ -25,25 +30,26 @@ instance Num Fix16 where
     Fix16 a * Fix16 b = Fix16 (fixedMul a b)
     negate (Fix16 a) = Fix16 (negate a)
     abs (Fix16 a) = Fix16 (abs a)
-    signum (Fix16 a) = Fix16 (signum a * scale)
-    fromInteger z = Fix16 (fromInteger z * scale)
+    signum (Fix16 a) = Fix16 (signum a * scale_i32)
+    fromInteger z = Fix16 (fromInteger z * scale_i32)
 
 instance Fractional Fix16 where
     Fix16 a / Fix16 b = Fix16 (fixedDiv a b)
     recip (Fix16 a) = Fix16 (fixedDiv unit a)
-    fromRational q = Fix16 $ fromInteger (scale * numerator q `div` denominator q)
+    fromRational q = Fix16 $ fromInteger (scale_i * numerator q `div` denominator q)
 
 instance Real Fix16 where
-    toRational (Fix16 a) = toInteger a % scale
+    toRational (Fix16 a) = toInteger a % scale_i
 
 instance RealFrac Fix16 where
     properFraction (Fix16 a) =
-        let (q, r) = quotRem a scale in
+        let (q, r) = quotRem a scale_i32 in
         (fromIntegral q, Fix16 r)
 
 instance Show Fix16 where
+    --showsPrec d (Fix16 2147483647) = showString "32768⁻"
     showsPrec d (Fix16 a) =
-        let (i,frac) = quotRem a scale in
+        let (i,frac) = quotRem a scale_i32 in
         if frac == 0
             then shows i . showString ".0"
             else
@@ -58,13 +64,19 @@ Fix16 a // Fix16 b = Fix16 (fixedDiv a b)
 
 -- becomes the same integer value, if it is representable
 fromInt32 :: Int32 -> Fix16
-fromInt32 a = Fix16 (a * scale)
+fromInt32 a = Fix16 (a `shiftL` scale_bits)
+
+fromInt16 :: Int16 -> Fix16
+fromInt16 = fromInt32 . fromIntegral
 
 integerPart32 :: Fix16 -> Int32
-integerPart32 (Fix16 a) = a `quot` scale
+integerPart32 (Fix16 a) = a `quot` scale_i32
 
 integerPart :: Fix16 -> Int
-integerPart (Fix16 a) = fromIntegral (a `quot` scale)
+integerPart (Fix16 a) = fromIntegral (a `quot` scale_i32)
+
+fractionalPart :: Fix16 -> Fix16
+fractionalPart (Fix16 a) = Fix16 (a .&. fracmask)
 
 -- could be more efficient
 toDouble :: Fix16 -> Double
@@ -88,7 +100,7 @@ fixedDiv2 :: HasCallStack => Int32 -> Int32 -> Int32
 fixedDiv2 a b = 
         let a' = fromIntegral a :: Double
             b' = fromIntegral b :: Double
-            c' = (a' / b') * scale
+            c' = (a' / b') * scale_d
         in
             if c' < -2147483648.0 || c' > 2147483648.0
                 then error "fixed point division by zero (case 2)"
@@ -97,4 +109,4 @@ fixedDiv2 a b =
 -- the input is non-negative and less than unit
 extractDecimals :: Int32 -> [Int]
 extractDecimals 0 = []
-extractDecimals frac = fromIntegral q : extractDecimals r where (q,r) = (10 * frac) `divMod` scale
+extractDecimals frac = fromIntegral q : extractDecimals r where (q,r) = (10 * frac) `divMod` scale_i32
