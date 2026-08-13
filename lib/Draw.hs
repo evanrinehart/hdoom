@@ -26,10 +26,9 @@ drawPatch fb x y (Patch (PatchHeader width height left top _) columns) = do
 
 drawColumn :: FrameBuffer -> Int -> Int -> [Post] -> IO ()
 drawColumn (FrameBuffer fbw _ _ buf) x y posts = go posts where
-    go (Post topdelta pixels : more) = do
+    go (Post topdelta count pixels : more) = do
         let start = fbw * (y + topdelta) + x
-        let count = SBS.length pixels
-        copyVerticalBytes buf fbw start count (coerce pixels)
+        copyVerticalBytes buf fbw start count pixels
         go more
     go [] = pure ()
 

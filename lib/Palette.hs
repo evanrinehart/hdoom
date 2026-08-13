@@ -3,8 +3,9 @@ module Palette where
 import Data.ByteString (ByteString)
 import Data.Vector.Primitive (Vector)
 import qualified Data.Vector.Primitive as VP
+
 import RGBA
-import ByteParsing
+import LoadWord
 
 newtype Palette = Palette (Vector RGBA) deriving (Show)
 
@@ -14,3 +15,6 @@ decodePalette bs = Palette (VP.fromListN 256 (go 0)) where
     go i
         | i == limit = []
         | otherwise = loadWordRGB i bs : go (i + 3)
+
+loadWordRGB :: Int -> ByteString -> RGBA
+loadWordRGB i = RGBA . loadWord24LE 255 i

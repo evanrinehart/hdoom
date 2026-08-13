@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE BangPatterns #-}
 module LumpDirectory where
 
 import System.IO (Handle, SeekMode(..))
@@ -9,9 +10,11 @@ import Data.Vector.Primitive ((!))
 import Data.Int
 import Name8
 import Offset
-import ByteParsing
 import Control.Monad (guard)
 import Control.Exception (evaluate)
+
+import LoadWord
+import BlobParsers (mapByteStringChunks)
 
 -- the key to it all
 data LumpDirectory = LumpDirectory
@@ -38,14 +41,21 @@ readLumpDirectory h = do
             Nothing -> pure (Left "readLumpDirectory: main header format")
             Just (_, n, off) -> do
                 hSeekOff h off
-                mblob <- readSizedBlob (n * 16) h 
+                mblob <- readSizedBlob (n * 16) h -- multiple of 16 bytes
                 case mblob of
                     Nothing -> pure (Left "readLumpDirectory: directory lump size")
-                    Just blob -> do
-                        col1 <- (evaluate . VP.fromListN n . map (Offset . loadInt32LE 0) . chunkByteString 16) blob
-                        col2 <- (evaluate . VP.fromListN n . map (         loadInt32LE 4) . chunkByteString 16) blob
-                        col3 <- (evaluate . VP.fromListN n . map (Name8 . loadWord64BE 8) . chunkByteString 16) blob
-                        pure $ Right (LumpDirectory n col1 col2 col3)
+                    Just blob ->
+                        -- blob is now known to be multiple of 16 bytes
+                        case parseDirectory n blob of
+                            Nothing -> pure $ Left "readLumpDirectory: impossible, blob was multiple of 16 bytes?"
+                            Just ld -> pure $ Right ld
+
+parseDirectory :: Int -> ByteString -> Maybe LumpDirectory
+parseDirectory n blob = do
+    col1 <- VP.fromListN n <$> mapByteStringChunks 16 (Offset . loadInt32LE 0) blob
+    col2 <- VP.fromListN n <$> mapByteStringChunks 16 (loadInt32LE 4) blob
+    col3 <- VP.fromListN n <$> mapByteStringChunks 16 (Name8 . loadWord64BE 8) blob
+    pure (LumpDirectory n col1 col2 col3)
 
 readSizedBlob :: Int -> Handle -> IO (Maybe ByteString)
 readSizedBlob size h = do

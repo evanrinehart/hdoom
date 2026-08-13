@@ -7,6 +7,8 @@ import Data.ByteString (ByteString)
 import qualified Data.ByteString as BS
 import qualified Data.Vector.Primitive as VP
 import Data.Vector.Primitive (Vector, (!))
+import Data.String
+
 import Name8
 import Offset
 import LumpDirectory
@@ -39,19 +41,17 @@ loadLump i = Loader $ \lumpdir h bail k -> do
         then bail $ "loadLump: (" ++ show i ++ ") ran out of data early"
         else k bs
 
-lookupLumpNumber :: Name8 -> Loader (Maybe Int)
+lookupLumpNumber :: Name8 -> Loader Int
 lookupLumpNumber name = Loader $ \dir _ bail k -> do
     let names = lumpdir_names dir
-    k (VP.findIndexR (name ==) names)
+    case VP.findIndexR (name ==) names of
+        Nothing -> bail (toString name ++ " not found")
+        Just i -> k i
 
 loadLumpByName :: Name8 -> Loader ByteString
 loadLumpByName name = do
-    mi <- lookupLumpNumber name
-    case mi of
-        Just i -> loadLump i
-        Nothing -> fail ("loadLumpByName: \"" ++ toString name ++ "\" not found")
-
-    
+    i <- lookupLumpNumber name
+    loadLump i
 
 yeahright :: MonadFail m => Either String a -> m a
 yeahright = either fail pure
@@ -73,12 +73,18 @@ lookupLump (LumpDirectory limit offsets sizes names) i = do
 getLumpName :: Int -> Loader (Maybe Name8)
 getLumpName i = Loader $ \dir _ _ k -> k (lumpdirGetName dir i)
 
-findFirstLumpFrom :: Int -> Name8 -> Loader (Maybe Int)
+loadMapLump :: String -> String -> Loader ByteString
+loadMapLump mapname name = do
+    map_i <- lookupLumpNumber (fromString mapname)
+    lump_i <- findFirstLumpFrom map_i (fromString name)
+    loadLump lump_i
+
+findFirstLumpFrom :: Int -> Name8 -> Loader Int
 findFirstLumpFrom start wanted = go start where
     go i = do
         mname <- getLumpName i
         case mname of
-            Nothing -> pure Nothing -- ran out of directory
+            Nothing -> fail ("sublump \"" ++ toString wanted ++ "\" not found")
             Just name -> if name == wanted
-                then pure (Just i)
+                then pure i
                 else go (i + 1)

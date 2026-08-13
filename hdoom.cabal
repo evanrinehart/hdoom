@@ -16,7 +16,7 @@ library
         RGBA, Name8, Offset, Input, Buffer8, Wave, Palette, Patch, Level, Fix16,
         DoomKeys, RNG, KnownIWADs, LumpDirectory,
         Clock, AbstractFilePath, FileSystem, FPS, 
-        Loader, ByteParsing,
+        Loader, LoadWord, BlobParsers,
         Video, Audio, Raylib, Draw, FrameBuffer, Gamepad,
         Mobj, WadFile,
         Nodes, PackedNodes, AreaTree, Four, Geometry,

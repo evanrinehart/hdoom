@@ -7,7 +7,7 @@ import System.IO (hClose, IOMode(..), Handle)
 import Control.Concurrent
 import Control.Exception (throwIO, finally)
 
-import FileSystem (identifyIWAD, openFile, OsPath)
+import FileSystem
 import Clock
 import Video
 import Audio
@@ -21,7 +21,6 @@ import LumpDirectory
 
 import Input
 import Draw
-import AreaTree
 
 data App = App
   { app_video :: VideoCtrl
@@ -63,11 +62,11 @@ main = do
     drawPatch fb 0 0 patch1
     --drawPatch fb 160 100 patch2
 
-    level <- runLoader (loadLevel "E1M1") ld h `orThrowWith` id
-    nodes <- runLoader (loadNodes "E1M1") ld h `orThrowWith` id
+    --level <- runLoader (loadLevel "MAP01") ld h `orThrowWith` id
+    nodes <- runLoader (loadNodes "MAP01") ld h `orThrowWith` id
+    --blockmap <- runLoader (loadBlockMap "E1M1") ld h `orThrowWith` id
 
-    let tree = nodesToAreaTree nodes
-    print tree
+    mapM_ print nodes
 
 
 
