@@ -24,6 +24,8 @@ import Data.IORef
 import qualified Data.Vector.Mutable as V
 import Data.Foldable (fold)
 
+import ColorBuffer
+
 import Input
 
 data VideoMisc = VideoMisc
@@ -166,17 +168,6 @@ SetGamepadMappings("03000000790000004e95000011010000,DragonRise Inc. NGC USB Gam
     -- GAMEPAD_BUTTON_RIGHT_FACE_RIGHT
     -- GAMEPAD_BUTTON_LEFT_TRIGGER_1
     -- GAMEPAD_BUTTON_RIGHT_TRIGGER_1
-
-copyTrueColor :: Image -> Buffer8 -> Palette -> IO ()
-copyTrueColor img (Buffer8 src) (Palette pal) = do
-    w <- getImageWidth img
-    h <- getImageHeight img
-    dst <- getImageData img
-    let n = w * h
-    forM_ [0 .. n-1] $ \i -> do -- might need to get more primitive
-        idx <- readByteArray src i :: IO Word8
-        let RGBA clr = pal ! (fromIntegral idx)
-        pokeElemOff dst i clr
 
 {-
 fillRandom :: Buffer8 -> Image -> IO ()

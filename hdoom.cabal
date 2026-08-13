@@ -20,6 +20,7 @@ library
         Video, Audio, Raylib, Draw, FrameBuffer, Gamepad,
         Mobj, WadFile,
         Nodes, PackedNodes, AreaTree, Four, Geometry,
+        ColorBuffer
     build-depends:  base ^>=4.20.0.0, vector, mtl, primitive, bytestring, containers,
                     unordered-containers, hashable, clock, directory, filepath, file-io, stm
     -- default-language: Haskell2010
