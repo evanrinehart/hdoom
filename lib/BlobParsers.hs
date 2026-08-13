@@ -51,8 +51,8 @@ tryTakePost bs = do
     guard (total >= 3 + len + 1)
     let noheader = BS.drop 3 bs
     let rest = BS.drop (len + 1) noheader
-    let pixels = bsToByteArray $ BS.take len noheader
-    Just (Post topdelta len pixels, rest)
+    let post = makePost topdelta (BS.take len noheader)
+    post `seq` Just (post, rest)
 
 parseSound :: ByteString -> Maybe Wave
 parseSound bs = do
