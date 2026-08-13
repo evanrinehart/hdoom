@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE BangPatterns #-}
 module WadFile where
 
 import System.IO (Handle)
@@ -10,6 +11,8 @@ import Data.Vector.Primitive (Vector)
 import qualified Data.Vector.Primitive as VP
 import Data.List
 import Name8
+import Fix16
+import Four
 import Loader
 import ByteParsing
 import Control.Monad (guard)
@@ -19,6 +22,7 @@ import Data.Maybe
 import Wave
 import Palette
 import Patch
+import Nodes
 import Level
 
 import qualified Debug.Trace
@@ -189,13 +193,45 @@ loadMapLump mapname name = do
     Just lump_i <- findFirstLumpFrom map_i name
     loadLump lump_i
 
-        
-        
+
+-- load the NODES lump for level
+loadNodes :: Name8 -> Loader [Node]
+loadNodes mapname = do
+    blob <- loadMapLump mapname "NODES"
+    nodes <- parseNodes blob `orFailWith` (toString mapname ++ "nodes lump")
+    pure nodes
+    --let n = BS.length blob `div` 28
+    -- !bsp <- packBSP n nodes `orFailWith` (toString mapname ++ " cycle in nodes detected")
+    --pure bsp
+
+parseNodes :: ByteString -> Maybe [Node]
+parseNodes = mapByteStringChunks 28 $ \bs ->
+    Node
+        (fromInt16 (loadInt16LE 0 bs))
+        (fromInt16 (loadInt16LE 2 bs))
+        (fromInt16 (loadInt16LE 4 bs))
+        (fromInt16 (loadInt16LE 6 bs))
+        (Four
+            (fromInt16 (loadInt16LE 8 bs))
+            (fromInt16 (loadInt16LE 10 bs))
+            (fromInt16 (loadInt16LE 12 bs))
+            (fromInt16 (loadInt16LE 14 bs)))
+        (Four
+            (fromInt16 (loadInt16LE 16 bs))
+            (fromInt16 (loadInt16LE 18 bs))
+            (fromInt16 (loadInt16LE 20 bs))
+            (fromInt16 (loadInt16LE 22 bs)))
+        (fromIntegral (loadWord16LE 24 bs))
+        (fromIntegral (loadWord16LE 26 bs))
 
 
 
 orFail (Just x) _  = Right x
 orFail Nothing msg = Left msg
+
+orFailWith :: MonadFail m => Maybe a -> String -> m a
+orFailWith (Just x) _  = pure x
+orFailWith Nothing msg = fail msg
 
 guardMsg :: Bool -> String -> Either String ()
 guardMsg True _ = Right ()

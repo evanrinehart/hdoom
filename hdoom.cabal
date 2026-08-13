@@ -16,10 +16,11 @@ library
         RGBA, Name8, Offset, Input, Buffer8, Wave, Palette, Patch, Level, Fix16,
         DoomKeys, RNG, KnownIWADs, LumpDirectory,
         Clock, AbstractFilePath, FileSystem, FPS, 
-        Loader, ByteParsing, 
+        Loader, ByteParsing,
         Video, Audio, Raylib, Draw, FrameBuffer, Gamepad,
-        Mobj, WadFile
-    build-depends:  base ^>=4.20.0.0, vector, mtl, primitive, bytestring,
+        Mobj, WadFile,
+        Nodes, PackedNodes, AreaTree, Four, Geometry,
+    build-depends:  base ^>=4.20.0.0, vector, mtl, primitive, bytestring, containers,
                     unordered-containers, hashable, clock, directory, filepath, file-io, stm
     -- default-language: Haskell2010
     ghc-options: -g -O2

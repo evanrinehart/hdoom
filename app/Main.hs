@@ -21,6 +21,7 @@ import LumpDirectory
 
 import Input
 import Draw
+import AreaTree
 
 data App = App
   { app_video :: VideoCtrl
@@ -62,7 +63,19 @@ main = do
     drawPatch fb 0 0 patch1
     --drawPatch fb 160 100 patch2
 
-    -- level <- runLoader (loadLevel "E1M1") ld h `orThrowWith` id
+    level <- runLoader (loadLevel "E1M1") ld h `orThrowWith` id
+    nodes <- runLoader (loadNodes "E1M1") ld h `orThrowWith` id
+
+    let tree = nodesToAreaTree nodes
+    print tree
+
+
+
+    --mapM_ print nodes
+    --print level
+    --mapM_ print (unpackBSP bsp)
+    --let node = bsp_getnode bsp 1
+    --let Four _ _ x _ = node_box1 node
 
     -- M initialize menu system
     -- R *load graphics*, initialize rendering lookup tables
