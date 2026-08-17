@@ -16,7 +16,7 @@ genmodule names = do
     telln ""
     telln "instance Show CodePointer where"
     mapM_ (\name -> telln $ "    showsPrec _ " ++ name ++ " = showString \"" ++ name ++ "\"") names
-    telln "    showsPrec d (CodePointer i) = showString \"SfxName \" . showsPrec d i"
+    telln "    showsPrec d (CodePointer i) = showString \"CodePointer \" . showsPrec d i"
     telln ""
     zipWithM_ genpat [0..] names
     telln ""

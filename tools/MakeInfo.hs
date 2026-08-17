@@ -9,6 +9,7 @@ import SfxName (makeSfxNames)
 import MakeInfoTable (makeInfoTable)
 
 import CodePointer (makeCodePointers)
+import SpriteNum (makeSpriteNums)
 
 getConfig :: IO (FilePath, FilePath)
 getConfig = do
@@ -22,6 +23,7 @@ main = do
     putStrLn $ "doomSourceDir = [" ++ doomSourceDir ++ "]"
     putStrLn $ "outputDir = [" ++ outputDir ++ "]"
     makeCodePointers (doomSourceDir ++ "/info.c") (outputDir ++ "/CodePointer.hs")
+    makeSpriteNums (doomSourceDir ++ "/info.h") (outputDir ++ "/SpriteNum.hs")
     makeMobjTypes (doomSourceDir ++ "/info.h") (outputDir ++ "/MobjType.hs")
     makeStateNames (doomSourceDir ++ "/info.h") (outputDir ++ "/StateName.hs")
     makeSfxNames (doomSourceDir ++ "/sounds.h") (outputDir ++ "/SfxName.hs")

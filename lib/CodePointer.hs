@@ -78,7 +78,7 @@ instance Show CodePointer where
     showsPrec _ A_SpawnSound = showString "A_SpawnSound"
     showsPrec _ A_SpawnFly = showString "A_SpawnFly"
     showsPrec _ A_BrainExplode = showString "A_BrainExplode"
-    showsPrec d (CodePointer i) = showString "SfxName " . showsPrec d i
+    showsPrec d (CodePointer i) = showString "CodePointer " . showsPrec d i
 
 pattern A_NULL :: CodePointer
 pattern A_NULL = CodePointer 0
