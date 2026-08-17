@@ -8,6 +8,8 @@ import StateName (makeStateNames)
 import SfxName (makeSfxNames)
 import MakeInfoTable (makeInfoTable)
 
+import CodePointer (makeCodePointers)
+
 getConfig :: IO (FilePath, FilePath)
 getConfig = do
     args <- getArgs
@@ -19,6 +21,7 @@ main = do
     (doomSourceDir, outputDir) <- getConfig
     putStrLn $ "doomSourceDir = [" ++ doomSourceDir ++ "]"
     putStrLn $ "outputDir = [" ++ outputDir ++ "]"
+    makeCodePointers (doomSourceDir ++ "/info.c") (outputDir ++ "/CodePointer.hs")
     makeMobjTypes (doomSourceDir ++ "/info.h") (outputDir ++ "/MobjType.hs")
     makeStateNames (doomSourceDir ++ "/info.h") (outputDir ++ "/StateName.hs")
     makeSfxNames (doomSourceDir ++ "/sounds.h") (outputDir ++ "/SfxName.hs")
