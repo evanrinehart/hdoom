@@ -6,7 +6,7 @@ data Number = Number !Int !Int
     deriving (Show, Read, Eq)
 
 instance Ord Number where
-    compare (Number q r) (Number p s) = compare q p <> compare r s
+    compare (Number i x) (Number j y) = compare i j <> compare x y
 
 instance Num Number where
     a + b = downscale (upscale a + upscale b)
