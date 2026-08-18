@@ -63,7 +63,7 @@ main = do
     --drawPatch fb 160 100 patch2
 
     --level <- runLoader (loadLevel "MAP01") ld h `orThrowWith` id
-    nodes <- runLoader (loadNodes "MAP01") ld h `orThrowWith` id
+    nodes <- runLoader (loadNodes "E1M1") ld h `orThrowWith` id
     --blockmap <- runLoader (loadBlockMap "E1M1") ld h `orThrowWith` id
 
     mapM_ print nodes
