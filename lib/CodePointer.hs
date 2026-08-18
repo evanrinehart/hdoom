@@ -5,6 +5,7 @@ newtype CodePointer = CodePointer Int deriving (Eq,Ord)
 
 instance Show CodePointer where
     showsPrec _ A_NULL = showString "A_NULL"
+    showsPrec _ A_Light0 = showString "A_Light0"
     showsPrec _ A_WeaponReady = showString "A_WeaponReady"
     showsPrec _ A_Lower = showString "A_Lower"
     showsPrec _ A_Raise = showString "A_Raise"
@@ -83,229 +84,233 @@ instance Show CodePointer where
 pattern A_NULL :: CodePointer
 pattern A_NULL = CodePointer 0
 
+pattern A_Light0 :: CodePointer
+pattern A_Light0 = CodePointer 1
+
 pattern A_WeaponReady :: CodePointer
-pattern A_WeaponReady = CodePointer 1
+pattern A_WeaponReady = CodePointer 2
 
 pattern A_Lower :: CodePointer
-pattern A_Lower = CodePointer 2
+pattern A_Lower = CodePointer 3
 
 pattern A_Raise :: CodePointer
-pattern A_Raise = CodePointer 3
+pattern A_Raise = CodePointer 4
 
 pattern A_Punch :: CodePointer
-pattern A_Punch = CodePointer 4
+pattern A_Punch = CodePointer 5
 
 pattern A_ReFire :: CodePointer
-pattern A_ReFire = CodePointer 5
+pattern A_ReFire = CodePointer 6
 
 pattern A_FirePistol :: CodePointer
-pattern A_FirePistol = CodePointer 6
+pattern A_FirePistol = CodePointer 7
 
 pattern A_Light1 :: CodePointer
-pattern A_Light1 = CodePointer 7
+pattern A_Light1 = CodePointer 8
 
 pattern A_FireShotgun :: CodePointer
-pattern A_FireShotgun = CodePointer 8
+pattern A_FireShotgun = CodePointer 9
 
 pattern A_Light2 :: CodePointer
-pattern A_Light2 = CodePointer 9
+pattern A_Light2 = CodePointer 10
 
 pattern A_FireShotgun2 :: CodePointer
-pattern A_FireShotgun2 = CodePointer 10
+pattern A_FireShotgun2 = CodePointer 11
 
 pattern A_CheckReload :: CodePointer
-pattern A_CheckReload = CodePointer 11
+pattern A_CheckReload = CodePointer 12
 
 pattern A_OpenShotgun2 :: CodePointer
-pattern A_OpenShotgun2 = CodePointer 12
+pattern A_OpenShotgun2 = CodePointer 13
 
 pattern A_LoadShotgun2 :: CodePointer
-pattern A_LoadShotgun2 = CodePointer 13
+pattern A_LoadShotgun2 = CodePointer 14
 
 pattern A_CloseShotgun2 :: CodePointer
-pattern A_CloseShotgun2 = CodePointer 14
+pattern A_CloseShotgun2 = CodePointer 15
 
 pattern A_FireCGun :: CodePointer
-pattern A_FireCGun = CodePointer 15
+pattern A_FireCGun = CodePointer 16
 
 pattern A_GunFlash :: CodePointer
-pattern A_GunFlash = CodePointer 16
+pattern A_GunFlash = CodePointer 17
 
 pattern A_FireMissile :: CodePointer
-pattern A_FireMissile = CodePointer 17
+pattern A_FireMissile = CodePointer 18
 
 pattern A_Saw :: CodePointer
-pattern A_Saw = CodePointer 18
+pattern A_Saw = CodePointer 19
 
 pattern A_FirePlasma :: CodePointer
-pattern A_FirePlasma = CodePointer 19
+pattern A_FirePlasma = CodePointer 20
 
 pattern A_BFGsound :: CodePointer
-pattern A_BFGsound = CodePointer 20
+pattern A_BFGsound = CodePointer 21
 
 pattern A_FireBFG :: CodePointer
-pattern A_FireBFG = CodePointer 21
+pattern A_FireBFG = CodePointer 22
 
 pattern A_BFGSpray :: CodePointer
-pattern A_BFGSpray = CodePointer 22
+pattern A_BFGSpray = CodePointer 23
 
 pattern A_Explode :: CodePointer
-pattern A_Explode = CodePointer 23
+pattern A_Explode = CodePointer 24
 
 pattern A_Pain :: CodePointer
-pattern A_Pain = CodePointer 24
+pattern A_Pain = CodePointer 25
 
 pattern A_PlayerScream :: CodePointer
-pattern A_PlayerScream = CodePointer 25
+pattern A_PlayerScream = CodePointer 26
 
 pattern A_Fall :: CodePointer
-pattern A_Fall = CodePointer 26
+pattern A_Fall = CodePointer 27
 
 pattern A_XScream :: CodePointer
-pattern A_XScream = CodePointer 27
+pattern A_XScream = CodePointer 28
 
 pattern A_Look :: CodePointer
-pattern A_Look = CodePointer 28
+pattern A_Look = CodePointer 29
 
 pattern A_Chase :: CodePointer
-pattern A_Chase = CodePointer 29
+pattern A_Chase = CodePointer 30
 
 pattern A_FaceTarget :: CodePointer
-pattern A_FaceTarget = CodePointer 30
+pattern A_FaceTarget = CodePointer 31
 
 pattern A_PosAttack :: CodePointer
-pattern A_PosAttack = CodePointer 31
+pattern A_PosAttack = CodePointer 32
 
 pattern A_Scream :: CodePointer
-pattern A_Scream = CodePointer 32
+pattern A_Scream = CodePointer 33
 
 pattern A_SPosAttack :: CodePointer
-pattern A_SPosAttack = CodePointer 33
+pattern A_SPosAttack = CodePointer 34
 
 pattern A_VileChase :: CodePointer
-pattern A_VileChase = CodePointer 34
+pattern A_VileChase = CodePointer 35
 
 pattern A_VileStart :: CodePointer
-pattern A_VileStart = CodePointer 35
+pattern A_VileStart = CodePointer 36
 
 pattern A_VileTarget :: CodePointer
-pattern A_VileTarget = CodePointer 36
+pattern A_VileTarget = CodePointer 37
 
 pattern A_VileAttack :: CodePointer
-pattern A_VileAttack = CodePointer 37
+pattern A_VileAttack = CodePointer 38
 
 pattern A_StartFire :: CodePointer
-pattern A_StartFire = CodePointer 38
+pattern A_StartFire = CodePointer 39
 
 pattern A_Fire :: CodePointer
-pattern A_Fire = CodePointer 39
+pattern A_Fire = CodePointer 40
 
 pattern A_FireCrackle :: CodePointer
-pattern A_FireCrackle = CodePointer 40
+pattern A_FireCrackle = CodePointer 41
 
 pattern A_Tracer :: CodePointer
-pattern A_Tracer = CodePointer 41
+pattern A_Tracer = CodePointer 42
 
 pattern A_SkelWhoosh :: CodePointer
-pattern A_SkelWhoosh = CodePointer 42
+pattern A_SkelWhoosh = CodePointer 43
 
 pattern A_SkelFist :: CodePointer
-pattern A_SkelFist = CodePointer 43
+pattern A_SkelFist = CodePointer 44
 
 pattern A_SkelMissile :: CodePointer
-pattern A_SkelMissile = CodePointer 44
+pattern A_SkelMissile = CodePointer 45
 
 pattern A_FatRaise :: CodePointer
-pattern A_FatRaise = CodePointer 45
+pattern A_FatRaise = CodePointer 46
 
 pattern A_FatAttack1 :: CodePointer
-pattern A_FatAttack1 = CodePointer 46
+pattern A_FatAttack1 = CodePointer 47
 
 pattern A_FatAttack2 :: CodePointer
-pattern A_FatAttack2 = CodePointer 47
+pattern A_FatAttack2 = CodePointer 48
 
 pattern A_FatAttack3 :: CodePointer
-pattern A_FatAttack3 = CodePointer 48
+pattern A_FatAttack3 = CodePointer 49
 
 pattern A_BossDeath :: CodePointer
-pattern A_BossDeath = CodePointer 49
+pattern A_BossDeath = CodePointer 50
 
 pattern A_CPosAttack :: CodePointer
-pattern A_CPosAttack = CodePointer 50
+pattern A_CPosAttack = CodePointer 51
 
 pattern A_CPosRefire :: CodePointer
-pattern A_CPosRefire = CodePointer 51
+pattern A_CPosRefire = CodePointer 52
 
 pattern A_TroopAttack :: CodePointer
-pattern A_TroopAttack = CodePointer 52
+pattern A_TroopAttack = CodePointer 53
 
 pattern A_SargAttack :: CodePointer
-pattern A_SargAttack = CodePointer 53
+pattern A_SargAttack = CodePointer 54
 
 pattern A_HeadAttack :: CodePointer
-pattern A_HeadAttack = CodePointer 54
+pattern A_HeadAttack = CodePointer 55
 
 pattern A_BruisAttack :: CodePointer
-pattern A_BruisAttack = CodePointer 55
+pattern A_BruisAttack = CodePointer 56
 
 pattern A_SkullAttack :: CodePointer
-pattern A_SkullAttack = CodePointer 56
+pattern A_SkullAttack = CodePointer 57
 
 pattern A_Metal :: CodePointer
-pattern A_Metal = CodePointer 57
+pattern A_Metal = CodePointer 58
 
 pattern A_SpidRefire :: CodePointer
-pattern A_SpidRefire = CodePointer 58
+pattern A_SpidRefire = CodePointer 59
 
 pattern A_BabyMetal :: CodePointer
-pattern A_BabyMetal = CodePointer 59
+pattern A_BabyMetal = CodePointer 60
 
 pattern A_BspiAttack :: CodePointer
-pattern A_BspiAttack = CodePointer 60
+pattern A_BspiAttack = CodePointer 61
 
 pattern A_Hoof :: CodePointer
-pattern A_Hoof = CodePointer 61
+pattern A_Hoof = CodePointer 62
 
 pattern A_CyberAttack :: CodePointer
-pattern A_CyberAttack = CodePointer 62
+pattern A_CyberAttack = CodePointer 63
 
 pattern A_PainAttack :: CodePointer
-pattern A_PainAttack = CodePointer 63
+pattern A_PainAttack = CodePointer 64
 
 pattern A_PainDie :: CodePointer
-pattern A_PainDie = CodePointer 64
+pattern A_PainDie = CodePointer 65
 
 pattern A_KeenDie :: CodePointer
-pattern A_KeenDie = CodePointer 65
+pattern A_KeenDie = CodePointer 66
 
 pattern A_BrainPain :: CodePointer
-pattern A_BrainPain = CodePointer 66
+pattern A_BrainPain = CodePointer 67
 
 pattern A_BrainScream :: CodePointer
-pattern A_BrainScream = CodePointer 67
+pattern A_BrainScream = CodePointer 68
 
 pattern A_BrainDie :: CodePointer
-pattern A_BrainDie = CodePointer 68
+pattern A_BrainDie = CodePointer 69
 
 pattern A_BrainAwake :: CodePointer
-pattern A_BrainAwake = CodePointer 69
+pattern A_BrainAwake = CodePointer 70
 
 pattern A_BrainSpit :: CodePointer
-pattern A_BrainSpit = CodePointer 70
+pattern A_BrainSpit = CodePointer 71
 
 pattern A_SpawnSound :: CodePointer
-pattern A_SpawnSound = CodePointer 71
+pattern A_SpawnSound = CodePointer 72
 
 pattern A_SpawnFly :: CodePointer
-pattern A_SpawnFly = CodePointer 72
+pattern A_SpawnFly = CodePointer 73
 
 pattern A_BrainExplode :: CodePointer
-pattern A_BrainExplode = CodePointer 73
+pattern A_BrainExplode = CodePointer 74
 
 
 parseCodePointer :: String -> Maybe (CodePointer, String)
 parseCodePointer input = case lex input of
     [("A_NULL", rest)] -> Just (A_NULL, rest)
+    [("A_Light0", rest)] -> Just (A_Light0, rest)
     [("A_WeaponReady", rest)] -> Just (A_WeaponReady, rest)
     [("A_Lower", rest)] -> Just (A_Lower, rest)
     [("A_Raise", rest)] -> Just (A_Raise, rest)
@@ -386,7 +391,7 @@ instance Read CodePointer where
 
 instance Bounded CodePointer where
     minBound = CodePointer 0
-    maxBound = CodePointer 73
+    maxBound = CodePointer 74
 
 instance Enum CodePointer where
     fromEnum (CodePointer i) = i

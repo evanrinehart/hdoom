@@ -12,8 +12,6 @@ import Utils
 getEnumLines :: String -> [String]
 getEnumLines = filter ("MF_" `isPrefixOf`) . map strip . lines
 
-strip = dropWhile (`elem` " \t")
-
 parseInt :: String -> Int
 parseInt s = read (takeWhile (/= ',') (strip s))
 

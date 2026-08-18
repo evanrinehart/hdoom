@@ -46,8 +46,14 @@ genpat i name = do
     telln ("pattern " ++ name ++ " = CodePointer " ++ show i)
     telln ""
 
+isCodePrefix :: String -> Bool
+isCodePrefix s
+    | "void A_" `isPrefixOf` s = True
+    | "void  A_" `isPrefixOf` s = True
+    | otherwise = False
+
 getFuncName :: String -> String
-getFuncName = takeWhile (/= '(') . drop 5
+getFuncName = takeWhile (/= '(') . strip . drop 4
 
 makeCodePointers :: FilePath -> FilePath -> IO ()
 makeCodePointers inPath outPath = do
@@ -55,7 +61,7 @@ makeCodePointers inPath outPath = do
     putStrLn $ "\tinput: [" ++ inPath ++ "]"
     putStrLn $ "\toutput: [" ++ outPath ++ "]"
     body <- readFile inPath
-    let func_lines = filter ("void A_" `isPrefixOf`) (lines body)
+    let func_lines = filter isCodePrefix (lines body)
     let func_names = map getFuncName func_lines
     let (_,output) = runWriter (genmodule ("A_NULL" : func_names))
     writeFile outPath output

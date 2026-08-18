@@ -30,7 +30,7 @@ library nuts-n-bolts
     hs-source-dirs: lib
     exposed-modules:
         MobjType, StateName, SfxName, MobjFlags, CodePointer, SpriteNum,
-        MobjInfo,
+        MobjInfo, MobjStates,
         Number
     build-depends:  base ^>=4.20.0.0,
     build-tool-depends: hdoom:makeinfo
@@ -56,7 +56,7 @@ executable makeinfo
     main-is: MakeInfo.hs
     other-modules:
         MobjType, StateName, SfxName, MobjFlags, CodePointer, SpriteNum,
-        MakeInfoTable,
+        MakeInfoTable, MakeStateTable,
         Utils
     hs-source-dirs: tools
     build-depends: base, mtl

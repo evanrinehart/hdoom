@@ -33,15 +33,8 @@ splitOn d body = case break (== d) body of
     (l, _:[]) -> [l,[]]
     (l, _:more) -> l : splitOn d more
 
-dropUntil :: String -> String -> String
-dropUntil pattern content = go content where
-    go [] = ""
-    go body
-        | pattern `isPrefixOf` body = body
-        | otherwise = go (drop 1 body)
-
+skipLine :: String -> String
 skipLine = drop 1 . dropWhile (/= '\n')
-strip = dropWhile (`elem` " \t")
 
 splitBraces :: String -> [String]
 splitBraces content = case break (=='{') content of

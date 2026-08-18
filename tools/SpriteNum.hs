@@ -49,9 +49,6 @@ genpat i name = do
 getFuncName :: String -> String
 getFuncName = takeWhile (/= '(') . drop 5
 
-strip :: String -> String
-strip = dropWhile (`elem` " \t")
-
 makeSpriteNums :: FilePath -> FilePath -> IO ()
 makeSpriteNums inPath outPath = do
     putStrLn "makeSpriteNums..."

@@ -7,6 +7,7 @@ import MobjFlags (makeMobjFlags)
 import StateName (makeStateNames)
 import SfxName (makeSfxNames)
 import MakeInfoTable (makeInfoTable)
+import MakeStateTable (makeStateTable)
 
 import CodePointer (makeCodePointers)
 import SpriteNum (makeSpriteNums)
@@ -29,3 +30,4 @@ main = do
     makeSfxNames (doomSourceDir ++ "/sounds.h") (outputDir ++ "/SfxName.hs")
     makeMobjFlags (doomSourceDir ++ "/p_mobj.h") (outputDir ++ "/MobjFlags.hs")
     makeInfoTable (doomSourceDir ++ "/info.c") (outputDir ++ "/MobjInfo.hs")
+    makeStateTable (doomSourceDir ++ "/info.c") (outputDir ++ "/MobjStates.hs")
