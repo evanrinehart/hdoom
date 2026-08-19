@@ -16,7 +16,7 @@ getConfig :: IO (FilePath, FilePath)
 getConfig = do
     args <- getArgs
     case break (== "--doomsrc") args of
-        (_, "--doomsrc":path:_) -> pure (path, "lib")
+        (_, "--doomsrc":path:_) -> pure (path, "codex")
         _ -> fail "usage: makeinfo --doomsrc <path>"
 
 main = do
