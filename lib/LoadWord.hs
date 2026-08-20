@@ -45,6 +45,9 @@ loadWord24BE filler i bs =
 loadWord24LE :: Word8 -> Int -> ByteString -> Word32
 loadWord24LE filler i = byteSwap32 . loadWord24BE filler i
 
+loadInt8 :: Int -> ByteString -> Int8
+loadInt8 i = fromIntegral . loadWord8 i
+
 loadInt16LE :: Int -> ByteString -> Int16
 loadInt16LE i = fromIntegral . loadWord16LE i
 
