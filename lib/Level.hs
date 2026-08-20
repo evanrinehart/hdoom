@@ -1,6 +1,8 @@
 {-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE PatternSynonyms #-}
 module Level where
 
+import Data.Word
 import Name8
 
 data Vertex = Vertex !Int !Int deriving Show
@@ -35,11 +37,11 @@ data Sector = Sector
         deriving Show
 
 data Thing = Thing
-    { pos_x :: Int
-    , pos_y :: Int
-    , angle :: Int -- degrees from east
-    , doomed_num :: Int
-    , flags :: Int }
+    { thing_posx :: Int
+    , thing_posy :: Int
+    , thing_angle :: Int -- degrees from east
+    , thing_doomednum :: Int
+    , thing_flags :: Word32 }
         deriving Show
 
 data Level = Level
@@ -49,3 +51,15 @@ data Level = Level
     , sectors :: [Sector]
     , things :: [Thing] }
         deriving Show
+
+pattern MTF_AMBUSH :: Word32
+pattern MTF_AMBUSH = 8
+
+pattern MTF_EASY :: Word32
+pattern MTF_EASY = 1
+
+pattern MTF_MEDIUM :: Word32
+pattern MTF_MEDIUM = 2
+
+pattern MTF_HARD :: Word32
+pattern MTF_HARD = 4

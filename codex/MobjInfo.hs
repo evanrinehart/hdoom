@@ -8,12 +8,12 @@ import MobjFlags
 
 data MobjInfo = MobjInfo
    { mobjinfo_type :: MobjType
-   , mobjinfo_doomednum :: Number
+   , mobjinfo_doomednum :: Int
    , mobjinfo_spawnstate :: StateName
    , mobjinfo_spawnhealth :: Number
    , mobjinfo_seestate :: StateName
    , mobjinfo_seesound :: SfxName
-   , mobjinfo_reactiontime :: Number
+   , mobjinfo_reactiontime :: Int
    , mobjinfo_attacksound :: SfxName
    , mobjinfo_painstate :: StateName
    , mobjinfo_painchance :: Number
