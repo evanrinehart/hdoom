@@ -13,6 +13,7 @@ import qualified Data.Set as Set
 
 type Divline = Line Fix16
 type BBox = Four Fix16
+
 data AreaTree =
     SplitArea Int BBox Divline AreaTree AreaTree |
     LeafArea Int BBox
@@ -51,3 +52,23 @@ detectCycle (SplitArea i _ _ l r) seen =
 
 maxArea :: BBox
 maxArea = Four minBound maxBound maxBound minBound
+
+
+
+lookupSubsectorByPoint :: AreaTree -> Fix16 -> Fix16 -> Int
+lookupSubsectorByPoint tree x y = go tree where
+    go (LeafArea ssnum _) = ssnum
+    go (SplitArea i box line child0 child1) =
+        if r_PointOnSide x y line
+            then go child1
+            else go child0
+
+lookupSubsectorByPoint' :: PackedNodes -> Fix16 -> Fix16 -> Int
+lookupSubsectorByPoint' (PackedNodes n arr) x y = go (n - 1) where
+    go i = case analyzeNodeNumber i of
+        SubsectorRef ssnum -> ssnum
+        NodeRef here ->
+            let line = unsafeGetDivline arr here in
+            if r_PointOnSide x y line
+                then go (fromIntegral (unsafeGetChild1 arr here))
+                else go (fromIntegral (unsafeGetChild0 arr here))
