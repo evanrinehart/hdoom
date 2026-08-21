@@ -15,9 +15,9 @@ library
     exposed-modules:
         RGBA, Name8, Offset, Input, Buffer8, Wave, Palette, Patch, Level, Fix16, Angle,
         Skill, GameRules,
-        DoomKeys, RNG, KnownIWADs, LumpDirectory,
+        DoomKeys, RNG, KnownIWADs, LumpDirectory, Ticcmd,
         Clock, AbstractFilePath, FileSystem, FPS, 
-        Loader, LoadWord, BlobParsers,
+        Loader, LoadWord, PackWord, BlobParsers,
         Video, Audio, Raylib, Draw, FrameBuffer, Gamepad, ColorBuffer,
         WadFile,
         Nodes, PackedNodes, AreaTree, Four, Geometry,
@@ -34,7 +34,7 @@ library codex
         MobjInfo, MobjStates,
         Number
     build-depends:  base ^>=4.20.0.0,
-    build-tool-depends: hdoom:makeinfo
+    -- build-tool-depends: hdoom:makeinfo
 
 executable hdoom
     import:           warnings

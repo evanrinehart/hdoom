@@ -1,5 +1,12 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-module Fix16 (Fix16(..), fromInt32, fromInt16, toDouble, integerPart, integerPart32, (//)) where
+module Fix16 (
+    Fix16(..),
+    fromInt32,
+    fromInt16,
+    toDouble,
+    integerPart,
+    integerPart32,
+    (//)) where
 
 import Data.Int
 import Data.Bits
@@ -31,7 +38,10 @@ instance Num Fix16 where
     negate (Fix16 a) = Fix16 (negate a)
     abs (Fix16 a) = Fix16 (abs a)
     signum (Fix16 a) = Fix16 (signum a * scale_i32)
-    fromInteger z = Fix16 (fromInteger z * scale_i32)
+    fromInteger z
+        | z < -32768 = Fix16 minBound
+        | z > 32767 = Fix16 maxBound
+        | otherwise = Fix16 (fromInteger z `shiftL` scale_bits)
 
 instance Fractional Fix16 where
     Fix16 a / Fix16 b = Fix16 (fixedDiv a b)
@@ -62,12 +72,14 @@ instance Show Fix16 where
 (//) :: HasCallStack => Fix16 -> Fix16 -> Fix16
 Fix16 a // Fix16 b = Fix16 (fixedDiv a b)
 
--- becomes the same integer value, if it is representable
 fromInt32 :: Int32 -> Fix16
-fromInt32 a = Fix16 (a `shiftL` scale_bits)
+fromInt32 i
+    | i < -32768 = Fix16 minBound
+    | i > 32767 = Fix16 maxBound
+    | otherwise = Fix16 (i `shiftL` scale_bits)
 
 fromInt16 :: Int16 -> Fix16
-fromInt16 = fromInt32 . fromIntegral
+fromInt16 i = Fix16 (fromIntegral i `shiftL` scale_bits)
 
 integerPart32 :: Fix16 -> Int32
 integerPart32 (Fix16 a) = a `quot` scale_i32
